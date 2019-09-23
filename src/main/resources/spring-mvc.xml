@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd">
+	<!-- 扫描器 -->
+	<context:component-scan
+		base-package="com.yuanshuai.cms.controller"></context:component-scan>
+<!--读取配置文件 -->		
+<context:property-placeholder location="classpath:cms.properties"/>
+		
+		
+	<!-- 视图解析图 -->
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<!-- 配置前缀 -->
+		<property name="prefix" value="/WEB-INF/view/"></property>
+		<!-- 配置后缀 -->
+		<property name="suffix" value=".jsp"></property>
+	</bean>
+	<!-- 不拦截静态资源 -->
+	<mvc:default-servlet-handler />
+	<!-- mvc注解驱动 -->
+	<mvc:annotation-driven validator="validator"></mvc:annotation-driven>
+	<!-- 文件上传的处理类 -->
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver"></bean>
+	<!-- hibernate 表单校验 -->
+	<bean id="validator"
+		class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+		<property name="providerClass"
+			value="org.hibernate.validator.HibernateValidator"></property>
+	</bean>
+
+	<!-- 配置拦截器 -->
+	<mvc:interceptors>
+		<!-- 管理员的拦截器 -->
+		<mvc:interceptor>
+			<!-- 拦截的规则 -->
+			<mvc:mapping path="/admin/**" />
+			<!-- 静态资源部拦截 -->
+			<mvc:exclude-mapping path="/resource/**" />
+			<!-- 拦截器处理类 -->
+			<bean class="com.yuanshuai.cms.util.AdminInterceptor"></bean>
+
+		</mvc:interceptor>
+		
+		<!-- 注册用户的拦截器 -->
+		<mvc:interceptor>
+			<!-- 拦截的规则 -->
+			<mvc:mapping path="/my/**" />
+			<!-- 静态资源部拦截 -->
+			<mvc:exclude-mapping path="/resource/**" />
+			<!-- 拦截器处理类 -->
+			<bean class="com.yuanshuai.cms.util.UserInterceptor"></bean>
+
+		</mvc:interceptor>
+
+
+
+
+	</mvc:interceptors>
+</beans>

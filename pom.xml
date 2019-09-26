@@ -263,7 +263,7 @@
 				</configuration>
 			</plugin>
 
-			<!-- jetty插件 -->
+			<!-- jetty插件 端口号80 jetty服务器启动 -->
 			<plugin>
 				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-maven-plugin</artifactId>
@@ -272,7 +272,7 @@
 				<configuration>
 					<httpConnector>
 						<!-- 端口号 -->
-						<port>8080</port>
+						<port>80</port>
 						<!-- 访问路径 -->
 						<host>localhost</host>
 					</httpConnector>

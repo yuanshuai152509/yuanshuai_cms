@@ -19,7 +19,9 @@ public class CommentServiceImpl implements CommentService {
 	private CommentMapper commentMapper ;
 
 	
-
+	/**
+	 * 添加评论
+	 */
 	@Override
 	public int insert(Comment comment) {
 		// TODO Auto-generated method stub
@@ -29,9 +31,22 @@ public class CommentServiceImpl implements CommentService {
 
 
 	@Override
-	public PageInfo<Comment> selects(Integer page, Integer pageSize) {
+	public PageInfo<Comment> selects(Integer articleId,Integer page, Integer pageSize) {
 		PageHelper.startPage(page, pageSize);
-		List<Comment> list = commentMapper.selects();
+		List<Comment> list = commentMapper.selects(articleId);
+		
+		return new PageInfo<Comment>(list);
+	}
+
+
+
+	@Override
+	public PageInfo<Comment> selectsByUserId(Integer userId, Integer page, Integer pageSize) {
+		PageHelper.startPage(page, pageSize);
+		List<Comment> list = commentMapper.selectsByUserId(userId);
+		
+		
+		
 		
 		return new PageInfo<Comment>(list);
 	}

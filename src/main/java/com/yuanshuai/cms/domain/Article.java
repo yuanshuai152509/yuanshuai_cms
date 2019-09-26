@@ -20,7 +20,9 @@ public class Article  implements Serializable {
 	private Integer id;
 
     private String title;
+    private String summary;//摘要
 
+    
     private String picture;
 
     private Integer channelId;
@@ -50,7 +52,15 @@ public class Article  implements Serializable {
     
     
 
-    public User getUser() {
+    public String getSummary() {
+		return summary;
+	}
+
+	public void setSummary(String summary) {
+		this.summary = summary;
+	}
+
+	public User getUser() {
 		return user;
 	}
 

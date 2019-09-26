@@ -1,9 +1,31 @@
 package com.yuanshuai.cms.service;
 
 import com.yuanshuai.cms.domain.Article;
+
+
 import com.github.pagehelper.PageInfo;
 
 public interface ArticleService {
+
+	/**
+	 * 上篇
+	 * @Title: selectPre 
+	 * @Description: TODO
+	 * @param id
+	 * @return
+	 * @return: Article
+	 */
+	Article selectPre(Article  article);
+	
+	/**
+	 * 下篇
+	 * @Title: selectPre 
+	 * @Description: TODO
+	 * @param id
+	 * @return
+	 * @return: Article
+	 */
+	Article selectNext(Article  article);
 	/**
 	 * 
 	 * @Title: selects
@@ -13,7 +35,8 @@ public interface ArticleService {
 	 * @return: List<Article>
 	 */
 	PageInfo<Article> selects(Article article,Integer page,Integer pageSize);
-
+	
+	// 10 个文本文件，
 	int insertSelective(Article record);
 
 	/**

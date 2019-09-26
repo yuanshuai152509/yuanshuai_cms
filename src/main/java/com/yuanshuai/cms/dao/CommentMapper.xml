@@ -17,7 +17,16 @@
   <select id="selects" resultMap="commentResultMap">
   
   select c.*,u.nickname from cms_comment c left join cms_user u on c.user_id = u.id 
+  where c.article_id=#{articleId}
+  order by c.created desc
   
+  </select>
+  
+ <!--  根据用户查询我的评论 -->
+    <select id="selectsByUserId" resultMap="commentResultMap">
+  
+  select c.*,u.nickname from cms_comment c left join cms_user u on c.user_id = u.id 
+  where c.user_id=#{userId}
   order by c.created desc
   
   </select>

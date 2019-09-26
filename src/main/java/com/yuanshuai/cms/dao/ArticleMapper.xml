@@ -5,6 +5,7 @@
 		type="com.yuanshuai.cms.domain.Article">
 		<id column="id" property="id" jdbcType="INTEGER" />
 		<result column="title" property="title" jdbcType="VARCHAR" />
+		<result column="summary" property="summary" jdbcType="VARCHAR" />
 		<result column="picture" property="picture" jdbcType="VARCHAR" />
 		<result column="channel_id" property="channelId"
 			jdbcType="INTEGER" />
@@ -32,12 +33,30 @@
 	</resultMap>
 	<sql id="Base_Column_List">
 		id, title, picture, channel_id, category_id, user_id, hits, hot, status,
-		deleted,
+		deleted,summary,
 		created, updated
 	</sql>
 	<sql id="Blob_Column_List">
 		content
 	</sql>
+	
+	
+	<!-- 上篇 -->
+	<select id="selectPre" resultMap="BaseResultMap">
+	select a.*,u.nickname from cms_article a  
+	left join cms_user u on a.user_id =u.id   
+	 where a.id = ( select id from cms_article b  where b.channel_id =${channelId}
+	    and id> #{id}
+    ORDER BY created asc limit 1)
+	</select>
+	<!-- 下篇 -->
+	<select id="selectNext" resultMap="BaseResultMap">
+	select a.*,u.nickname from cms_article a  
+	left join cms_user u on a.user_id =u.id   
+	 where a.id = ( select id from cms_article b  where b.channel_id =${channelId}
+	    and id &lt; #{id}
+    ORDER BY created desc limit 1)
+	</select>
 	
 	<!-- 文章列表查询 -->
 	<select id="selects" resultMap="BaseResultMap">
@@ -61,6 +80,9 @@
 			</if>
 			<if test="hot!=null">
 			  and 	hot =#{hot}
+			</if>
+				<if test="title!=null and title!=''">
+			  and 	title like "%" #{title} "%"
 			</if>
 
 		</where>
@@ -98,6 +120,11 @@
 		#{deleted,jdbcType=INTEGER}, #{created,jdbcType=TIMESTAMP}, #{updated,jdbcType=TIMESTAMP},
 		#{content,jdbcType=LONGVARCHAR})
 	</insert>
+	
+	
+	
+	
+<!-- 	 10 个文本文件， -->
 	<insert id="insertSelective"
 		parameterType="com.yuanshuai.cms.domain.Article">
 		insert into cms_article
@@ -107,6 +134,9 @@
 			</if>
 			<if test="title != null">
 				title,
+			</if>
+			<if test="summary != null">
+				summary,
 			</if>
 			<if test="picture != null">
 				picture,
@@ -148,6 +178,9 @@
 			</if>
 			<if test="title != null">
 				#{title,jdbcType=VARCHAR},
+			</if>
+			<if test="summary != null">
+				#{summary,jdbcType=VARCHAR},
 			</if>
 			<if test="picture != null">
 				#{picture,jdbcType=VARCHAR},

@@ -23,7 +23,7 @@ public class ArticleServiceImpl implements ArticleService {
 		List<Article> list = articleMapper.selects(article);
 		return new PageInfo<Article>(list);
 	}
-
+	//保存10 个文本文件
 	@Override
 	public int insertSelective(Article record) {
 		return articleMapper.insertSelective(record);
@@ -40,5 +40,19 @@ public class ArticleServiceImpl implements ArticleService {
 		// TODO Auto-generated method stub
 		return articleMapper.updateByPrimaryKeySelective(record);
 	}
+
+	@Override
+	public Article selectPre(Article article) {
+		// TODO Auto-generated method stub
+		return articleMapper.selectPre(article);
+	}
+
+	@Override
+	public Article selectNext(Article article) {
+		// TODO Auto-generated method stub
+		return articleMapper.selectNext(article);
+	}
+	
+	
 
 }

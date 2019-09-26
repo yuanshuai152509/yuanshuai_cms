@@ -1,6 +1,8 @@
 package com.yuanshuai.cms.service;
 
 import com.yuanshuai.cms.domain.Comment;
+
+
 import com.github.pagehelper.PageInfo;
 
 public interface CommentService {
@@ -11,7 +13,7 @@ public interface CommentService {
 	 * @return
 	 * @return: List<Comment>
 	 */
-		PageInfo<Comment> selects(Integer page ,Integer pageSize);
+		PageInfo<Comment> selects(Integer articleId,Integer page ,Integer pageSize);
 		/**
 		 * 增加评论
 		 * @Title: insert 
@@ -20,4 +22,14 @@ public interface CommentService {
 		 * @return: int
 		 */
 		int insert(Comment comment);//
+		
+		/**
+		 * 
+		 * @Title: selectsByUserId 
+		 * @Description: TODO
+		 * @param 根据用户查询我的评论
+		 * @return
+		 * @return: List<Comment>
+		 */
+		PageInfo<Comment> selectsByUserId(Integer userId,Integer page ,Integer pageSize);
 }

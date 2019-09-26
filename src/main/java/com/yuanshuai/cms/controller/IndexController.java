@@ -45,7 +45,8 @@ public class IndexController {
 	
 	//进入系统首页
 	@GetMapping(value = "")
-	public String index(Model model,Article article,@RequestParam(defaultValue = "1")Integer page,@RequestParam(defaultValue = "5")Integer pageSize) {
+	public String index(Model model,Article article,@RequestParam(defaultValue = "1")Integer page
+			,@RequestParam(defaultValue = "5")Integer pageSize) {
 		
 		//0设置查询条件
 		article.setStatus(1);//查询审过的文章
@@ -88,12 +89,8 @@ public class IndexController {
 			article2.setDeleted(0);//查询没有被删除的文章
 			PageInfo<Article> info2 = articleService.selects(article2, 1, 10);
 			model.addAttribute("lastArticles", info2.getList());
-			
-			
-			//
-			
 		return "index/index";
-		
 	}
+	
 
 }

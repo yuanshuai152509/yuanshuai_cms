@@ -14,6 +14,12 @@
 </head>
 <body>
 	<div class="container">
+	
+		<div class="form-group form-inline">
+			<input type="text" name="title" class="form-control" value="${article.title }"> &nbsp;
+			<button class="btn btn-info" onclick="query()">搜索</button>
+		</div>
+	
 		<ul class="list-unstyled">
 			<c:forEach items="${articles}" var="a">
 				<li class="media form-group"><img src="/pic/${a.picture }" class="mr-3"
@@ -22,6 +28,8 @@
 						<h4 class="mt-0 mb-1"><a href="javascript:myOpen(${a.id })"> ${a.title }</a></h4>
 						<h5 class="mt-0 mb-1">${a.user.nickname }&nbsp; <fmt:formatDate value="${a.updated }" pattern="yyyy-MM-dd HH:mm:ss"/> </h5>
 					  <span style="float: right">
+						<button type="button" class="btn btn-info" onclick="toUpdate(${a.id})">修改</button> 
+					  
 					   <c:if test="${a.deleted==0}">
 					  <button type="button" class="btn btn-success" onclick="update(this,${a.id})">删除</button>
 					  </c:if>
@@ -43,6 +51,18 @@
 </body>
 <script type="text/javascript">
 
+	//去修改
+	function toUpdate(id){
+		$("#center").load("article/update?id="+id);
+	}
+	
+
+//搜索
+function query(){
+	$("#center").load("/article/selectsByUser?title="+$("[name='title']").val());
+}
+
+
 function update(obj,id){
 	var deleted = $.trim($(obj).text())=="删除"?"1":"0";
 	
@@ -51,7 +71,6 @@ function update(obj,id){
 			//删除成功.改变删除按钮的内容及状态
 			
 			$(obj).text(deleted==1?"恢复":"删除");
-		//	$(obj).attr('disabled',true);
 			$(obj).attr('class',deleted==1?"btn btn-warning":"btn btn-success");
 		}
 	})
@@ -71,7 +90,6 @@ function update(obj,id){
 			$("#center").load(url);
 			
 		})
-		
 		
 		
 	})

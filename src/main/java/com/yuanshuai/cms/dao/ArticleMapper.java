@@ -5,6 +5,26 @@ import java.util.List;
 import com.yuanshuai.cms.domain.Article;
 
 public interface ArticleMapper {
+	
+	
+	/**
+	 * 上篇
+	 * @Title: selectPre 
+	 * @Description: TODO
+	 * @param article
+	 * @return
+	 * @return: Article
+	 */
+	Article selectPre(Article article);
+	/**
+	 * 下篇
+	 * @Title: selectPre 
+	 * @Description: TODO
+	 * @param article
+	 * @return
+	 * @return: Article
+	 */
+	Article selectNext(Article article);
 	/**
 	 * 
 	 * @Title: selects
@@ -19,6 +39,7 @@ public interface ArticleMapper {
 
 	int insert(Article record);
 
+	// 插入是个文本 
 	int insertSelective(Article record);
 
 	/**
@@ -30,7 +51,7 @@ public interface ArticleMapper {
 	 * @return: Article
 	 */
 	Article selectByPrimaryKey(Integer id);
-
+	//修改数据回显
 	int updateByPrimaryKeySelective(Article record);
 
 	int updateByPrimaryKeyWithBLOBs(Article record);

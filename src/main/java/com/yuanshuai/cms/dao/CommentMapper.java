@@ -18,7 +18,18 @@ public interface CommentMapper {
  * @return
  * @return: List<Comment>
  */
-	List<Comment> selects();
+	List<Comment> selects(Integer articleId);
+	/**
+	 * 
+	 * @Title: selectsByUserId 
+	 * @Description: TODO
+	 * @param 根据用户查询我的评论
+	 * @return
+	 * @return: List<Comment>
+	 */
+	List<Comment> selectsByUserId(Integer userId);
+	
+	
 	/**
 	 * 增加评论
 	 * @Title: insert 

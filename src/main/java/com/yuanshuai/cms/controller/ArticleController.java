@@ -37,7 +37,15 @@ public class ArticleController {
 	@Resource
 	private CommentService commentService;
 	
-	
+	/**
+	 * 添加评论
+	 * @Title: comment 
+	 * @Description: TODO
+	 * @param comment
+	 * @param request
+	 * @return
+	 * @return: boolean
+	 */
 	@ResponseBody
 	@PostMapping("comment")
 	public  boolean comment(Comment comment,HttpServletRequest request) {
@@ -48,7 +56,99 @@ public class ArticleController {
 		comment.setUser((User)session.getAttribute("user"));
 		comment.setCreated(new Date());
 		return commentService.insert(comment)>0;
+			
 	}
+	
+	public void SelectCommentServiceById(Model model, @RequestParam(defaultValue = "")String name,
+			@RequestParam(defaultValue = "")String pageNum
+			) {
+		model.addAttribute("name",name);
+		model.addAttribute("pageNum",pageNum);
+		
+	}
+	
+	//上一篇、下一篇文章
+	/**
+	 *  检查是否有上一篇
+	 * @Title: checkPre 
+	 * @Description: TODO
+	 * @param article
+	 * @return
+	 * @return: boolean
+	 */
+	@ResponseBody
+	@GetMapping("checkPre")
+	public boolean checkPre(Article article) {
+		Article pre = articleService.selectPre(article);
+		return pre!=null;
+	}
+	/**
+	 *  检查是否有下一篇
+	 * @Title: checkPre 
+	 * @Description: TODO
+	 * @param article
+	 * @return
+	 * @return: boolean
+	 */
+	@ResponseBody
+	@GetMapping("checkNext")
+	public boolean checkNext(Article article) {
+		Article pre = articleService.selectNext(article);
+		return pre!=null;
+	}
+	/**
+	 * 
+	 * @Title: selectPre 
+	 * @Description: 上一篇
+	 * @param model
+	 * @param article
+	 * @param page
+	 * @param pageSize
+	 * @return
+	 * @return: String
+	 */
+		@GetMapping("selectPre")
+		public String selectPre(Model model,Article article, @RequestParam(defaultValue = "1") Integer page,
+				@RequestParam(defaultValue = "10") Integer pageSize) {
+			//去查询上一篇的内容
+			Article pre = articleService.selectPre(article);
+
+			// 评论
+			PageInfo<Comment> info = commentService.selects(pre.getId(), page, pageSize);
+			String pages = PageUtil.page(page, info.getPages(), "/article/selectByUser", pageSize);
+
+			model.addAttribute("article", pre);//把上一篇内容放model
+			model.addAttribute("pages", pages);
+			model.addAttribute("comments", info.getList());
+			return "my/article";
+		}
+		
+		/**
+		 * 
+		 * @Title: selectPre 
+		 * @Description: 上一篇
+		 * @param model
+		 * @param article
+		 * @param page
+		 * @param pageSize
+		 * @return
+		 * @return: String
+		 */
+			@GetMapping("selectNext")
+			public String selectNext(Model model,Article article, @RequestParam(defaultValue = "1") Integer page,
+					@RequestParam(defaultValue = "10") Integer pageSize) {
+				//去查询上一篇的内容
+				Article next = articleService.selectNext(article);
+
+				// 评论
+				PageInfo<Comment> info = commentService.selects(next.getId(), page, pageSize);
+				String pages = PageUtil.page(page, info.getPages(), "/article/selectByUser", pageSize);
+
+				model.addAttribute("article", next);//把上一篇内容放model
+				model.addAttribute("pages", pages);
+				model.addAttribute("comments", info.getList());
+				return "my/article";
+			}
 	
 	/**
 	 * 
@@ -65,7 +165,8 @@ public class ArticleController {
 		Article article = articleService.selectByPrimaryKey(id);
 		
 		//评论
-		PageInfo<Comment> info = commentService.selects(page, pageSize);
+		PageInfo<Comment> info = commentService.selects(article.getId(), page, pageSize);
+	
 		String pages = PageUtil.page(page, info.getPages(), "/article/selectByUser", pageSize);
 		
 		
@@ -101,7 +202,7 @@ public class ArticleController {
 			article.setUserId(user.getId());
 			
 		PageInfo<Article> info = articleService.selects(article, page, pageSize);
-	    String pages = PageUtil.page(page, info.getPages(), "/article/selectsByUser", pageSize);
+	    String pages = PageUtil.page(page, info.getPages(), "/article/selectsByUser?title="+article.getTitle(), pageSize);
 	    model.addAttribute("articles", info.getList());
 	    model.addAttribute("pages", pages);
 	    model.addAttribute("article", article);
@@ -238,6 +339,21 @@ public class ArticleController {
 		
 	}
 	/**
+	 * 去文章修改页面 。。                            
+	 * @Title: update 
+	 * @Description: TODO
+	 * @return
+	 * @return: String
+	 */
+	@GetMapping("update")
+	public String update(Integer id,Model model) {
+		Article article = articleService.selectByPrimaryKey(id);
+		
+		model.addAttribute("article", article);
+		return "/my/articleupdate";
+	}
+	
+	/**
 	 * 
 	 * @Title: update 
 	 * @Description: 更新文章--审核文章,删除文章
@@ -251,6 +367,56 @@ public class ArticleController {
 		return articleService.updateByPrimaryKeySelective(article)>0;
 	}
 	
+	@ResponseBody
+	@PostMapping("publishupdate")
+	public boolean publishupdate(Article artice,MultipartFile file,HttpServletRequest request) {
+		
+	    //1.上传文章标题图片
+		if(!file.isEmpty()) {
+		  	
+			//获取原始上传文件的名称//a.jpg
+			String originalFilename = file.getOriginalFilename();	
+			//为了防止图片名称重复.使用UUID 统一处理上传的名称名称
+			String newFilename =UUID.randomUUID()+ originalFilename.substring(originalFilename.lastIndexOf("."));
+			//文件上传路径
+			//String path="d:/pic/";
+			File file2 = new File(filePath + newFilename);
+		
+			try {
+				//把文件写入硬盘
+				file.transferTo(file2);
+				
+				//封装标题图片的地址
+				artice.setPicture(newFilename);
+			} catch (IllegalStateException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+		}
+		
+		
+		//2.把文章内容保存到数据库
+		//默认文章的基本属性
+		artice.setHot(0);//文章为非热门
+		artice.setStatus(0);//文章为待审核
+		artice.setHits(0);//文章点击量默认为0
+		artice.setDeleted(0);//文章删除状态0
+		artice.setCreated(new Date());//文章发布时间
+		artice.setUpdated(new Date());//文章修改时间
+		//发布人
+		//false:从request获取session.对象,如果没有则返回null.如果有则返回session.. 
+		HttpSession session = request.getSession(false);
+		if(session!=null) {
+			User user = (User) session.getAttribute("user");
+		artice.setUserId(user.getId());//发布人
+		}else {
+			return false;//没有登录.不能发布
+		}
+		return	articleService.updateByPrimaryKeySelective(artice)>0;
+		
+	}
 	
 	
 	

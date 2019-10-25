@@ -92,7 +92,10 @@
 
 	</select>
 
-
+	<!-- 查询所有用来保存es -->
+	<select id="findAll" resultMap="BaseResultMap">
+		select * from cms_article
+	</select>
 
 	<select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs"
 		parameterType="java.lang.Integer">

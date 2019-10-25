@@ -52,6 +52,11 @@ public class ArticleServiceImpl implements ArticleService {
 		// TODO Auto-generated method stub
 		return articleMapper.selectNext(article);
 	}
+	@Override
+	public List<Article> findAll() {
+		// TODO Auto-generated method stub
+		return articleMapper.findAll();
+	}
 	
 	
 

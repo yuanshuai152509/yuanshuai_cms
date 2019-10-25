@@ -2,6 +2,7 @@ package com.yuanshuai.cms.service;
 
 import com.yuanshuai.cms.domain.Article;
 
+import java.util.List;
 
 import com.github.pagehelper.PageInfo;
 
@@ -16,7 +17,7 @@ public interface ArticleService {
 	 * @return: Article
 	 */
 	Article selectPre(Article  article);
-	
+	List<Article> findAll();
 	/**
 	 * 下篇
 	 * @Title: selectPre 
